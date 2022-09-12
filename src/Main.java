@@ -3,20 +3,39 @@ import java.util.ArrayList;
 
 class Main {
     public static void main(String[] args) {
+        Calculator2 c = new Calculator2();
+        c.calculate();
+    }
+}
+
+class Calculator2 {
+    // Функция на вырост, если вдруг понадобится обрабатывать больше трёх чисел.
+    String[] chunks;
+    ArrayList<Integer> x = new ArrayList<>(); // Список чисел
+    StringBuilder ops = new StringBuilder(); // Операторы действий
+
+    public void calculate() {
+        readInput();
+        checkAmount();
+        parse();
+        checkRange();
+        printResult();
+    }
+
+    private void readInput() {
         Scanner sc = new Scanner(System.in);
         String input = sc.nextLine();
-        String[] chunks = input.split("\\s+");
-        int l = chunks.length;
+        chunks = input.split("\\s+");
+    }
 
+    private void checkAmount() {
         // Если чисел с действиями между ними не два или три, вызывается ошибка
-        if (l != 3 && l != 5) {
+        if (chunks.length != 3 && chunks.length != 5) {
             throw new RuntimeException("Invalid input data");
         }
+    }
 
-        // Функция на вырост, если вдруг понадобится обрабатывать больше трёх чисел.
-
-        ArrayList<Integer> x = new ArrayList<>(); // Список чисел
-        StringBuilder ops = new StringBuilder(); // Операторы действий
+    private void parse() {
         for (int i = 0; i < chunks.length; i++) {
             if (i % 2 == 0) {
                 x.add(Integer.parseInt(chunks[i]));
@@ -26,7 +45,9 @@ class Main {
         }
         // если чисел всего два, в конец дописывается «плюс ноль», чтобы свич обработал это правильно
         if (ops.length() < 2) { x.add(0); ops.append("+"); }
+    }
 
+    private void checkRange() {
         /* Задание не очень корректно сформулировано: в нём сказано, что числа могут принимать
         значения от 1 до 10, но в примерах используется отрицательное число. Поэтому я решил
         понимать это как «принимают значения от -10 до 10 включительно».
@@ -39,9 +60,9 @@ class Main {
         if (Math.abs(x.get(0)) > 10 || Math.abs(x.get(1)) > 10 || Math.abs(x.get(2)) > 10) {
             throw new NumberFormatException("Input data out of range");
         }
+    }
 
-        /* Если бы переменных и/или действий с ними было больше, имело бы смысл выносить
-        эту функцию, но сейчас это не имеет смысла. */
+    private void printResult() {
 
         int result = switch (ops.toString()) {
             case "++" -> x.get(0) + x.get(1) + x.get(2); case "+-" -> x.get(0) + x.get(1) - x.get(2);
